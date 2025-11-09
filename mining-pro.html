@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Mining Financial Model - Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #bbb;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #f39c12;
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #444;
+            flex-wrap: wrap;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: #0f3460;
+            border: none;
+            color: #bbb;
+            cursor: pointer;
+            font-size: 1em;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-button.active {
+            color: #f39c12;
+            border-bottom-color: #f39c12;
+            background: #16213e;
+        }
+
+        .tab-button:hover {
+            background: #1a3a52;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .form-section h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ddd;
+            font-size: 0.95em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+        }
+
+        .info-text {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        button.calculate-btn {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+
+        button.calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-secondary {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-secondary:hover {
+            background: #229954;
+        }
+
+        .results {
+            background: #0f3460;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .results h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #f39c12;
+            text-align: center;
+        }
+
+        .result-card h4 {
+            color: #bbb;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .result-card .value {
+            font-size: 2em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .result-card .unit {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .chart-container {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .warning {
+            background: #7f8c8d;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        .warning strong {
+            color: #e74c3c;
+        }
+
+        .success {
+            background: #27ae60;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        .comparison-table th {
+            background: #1a1a2e;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:hover {
+            background: #1a3a52;
+        }
+
+        .scenario-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-btn {
+            padding: 15px;
+            background: #0f3460;
+            border: 2px solid #444;
+            border-radius: 8px;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .scenario-btn.active {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: #fff;
+        }
+
+        .scenario-btn:hover {
+            border-color: #f39c12;
+        }
+
+        .sensitivity-matrix {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .sensitivity-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+        }
+
+        .sensitivity-cell {
+            background: #0f3460;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .sensitivity-cell.header {
+            background: #f39c12;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .sensitivity-cell.positive {
+            background: #27ae60;
+        }
+
+        .sensitivity-cell.negative {
+            background: #e74c3c;
+        }
+
+        .monte-carlo-result {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .monte-carlo-stat {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 15px;
+        }
+
+        .monte-carlo-stat strong {
+            color: #f39c12;
+        }
+
+        .pdf-section {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #000;
+        }
+
+        .pdf-section h2 {
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+
+        .pdf-section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .pdf-section table th, .pdf-section table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .pdf-section table th {
+            background: #f39c12;
+            color: #fff;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #f39c12;
+        }
+
+        .spinner {
+            border: 4px solid #444;
+            border-top: 4px solid #f39c12;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .real-time-data {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .real-time-data strong {
+            font-size: 1.3em;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .tab-button, .calculate-btn, .btn-secondary, .tabs {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scenario-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ Bitcoin Mining Financial Model PRO</h1>
+            <p>Análise completa com IA, simulações e dados real-time</p>
+            <span class="badge">✨ VERSÃO PREMIUM</span>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('simple-payback')">
+                📊 Simple Payback
+            </button>
+            <button class="tab-button" onclick="switchTab('scenarios')">
+                🎯 Cenários
+            </button>
+            <button class="tab-button" onclick="switchTab('sensitivity')">
+                📈 Sensibilidade
+            </button>
+            <button class="tab-button" onclick="switchTab('monte-carlo')">
+                🎲 Monte Carlo
+            </button>
+            <button class="tab-button" onclick="switchTab('pdf-export')">
+                📄 Relatório PDF
+            </button>
+        </div>
+
+        <!-- TAB 1: SIMPLE PAYBACK -->
+        <div id="simple-payback" class="tab-content active">
+            <div class="form-grid">
+                <div class="form-section">
+                    <h3>📈 Dados da Rede Bitcoin</h3>
+                    <div class="real-time-data" id="btc-real-time">
+                        <div class="spinner"></div>
+                        <p>Carregando dados real-time...</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Network Hash Rate (EH/s)</label>
+                        <input type="number" id="spb-network-hash" value="760" step="0.1">
+                        <div class="info-text">Taxa de hash atual da rede</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Block Time (segundos)</label>
+                        <input type="number" id="spb-block-time" value="600" step="1">
+                        <div class="info-text">Tempo entre blocos: 600 = 10 minutos</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Block Reward (BTC)</label>
+                        <input type="number" id="spb-block-reward" value="3.125" step="0.001">
+                        <div class="info-text">Recompensa por bloco minerado</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Preço do Bitcoin (USD)</label>
+                        <input type="number" id="spb-btc-price" value="86000" step="100">
+                        <div class="info-text">Preço atual do BTC</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>💵 Custos do Minerador</h3>
+                    <div class="form-group">
+                        <label>Custo do Minerador ($/TH/s)</label>
+                        <input type="number" id="spb-miner-cost-per-th" value="25" step="1">
+                        <div class="info-text">Preço por unidade de hash</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Hash Rate do Minerador (TH/s)</label>
+                        <input type="number" id="spb-miner-hash-rate" value="860" step="1">
+                        <div class="info-text">Ex: Antminer S21 = 860 TH/s</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Custo Total do Minerador (USD)</label>
+                        <input type="number" id="spb-miner-total-cost" value="21500" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Potência do Minerador (kW)</label>
+                        <input type="number" id="spb-miner-power" value="11.18" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>⚡ Eletricidade & Taxas</h3>
+                    <div class="form-group">
+                        <label>Custo da Eletricidade ($/kWh)</label>
+                        <input type="number" id="spb-electricity-cost" value="0.05" step="0.001">
+                    </div>
+                    <div class="form-group">
+                        <label>Taxa da Pool (%)</label>
+                        <input type="number" id="spb-mining-fees" value="2" step="0.1">
+                    </div>
+                    <button class="calculate-btn" onclick="calculateSimplePayback()">
+                        🧮 Calcular Payback
+                    </button>
+                </div>
+            </div>
+
+            <div id="spb-results" class="hidden">
+                <div class="results">
+                    <h2>✅ Resultados - Simple Payback</h2>
+                    <div class="action-buttons">
+                        <button class="btn-secondary" onclick="exportToPDF('spb')">📄 Exportar PDF</button>
+                        <button class="btn-secondary" onclick="showBreakeven('spb')">📉 Ver Gráfico Breakeven</button>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Sua % da Rede</h4>
+                            <div class="value" id="spb-network-percentage">-</div>
+                            <div class="unit">%</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Receita Diária</h4>
+                            <div class="value" id="spb-daily-revenue">-</div>
+                            <div class="unit">USD/dia</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Custo Diário</h4>
+                            <div class="value" id="spb-daily-cost">-</div>
+                            <div class="unit">USD/dia</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Lucro Diário</h4>
+                            <div class="value" id="spb-daily-profit">-</div>
+                            <div class="unit">USD/dia</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Payback</h4>
+                            <div class="value" id="spb-payback-days">-</div>
+                            <div class="unit">dias</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Receita Anual</h4>
+                            <div class="value" id="spb-annual-revenue">-</div>
+                            <div class="unit">USD/ano</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="spb-breakeven-chart"></canvas>
+                    </div>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Diário</th>
+                            <th>Mensal</th>
+                            <th>Anual</th>
+                        </tr>
+                        <tr>
+                            <td>Bitcoin Minerado</td>
+                            <td id="spb-btc-daily">-</td>
+                            <td id="spb-btc-monthly">-</td>
+                            <td id="spb-btc-yearly">-</td>
+                        </tr>
+                        <tr>
+                            <td>Receita (após taxas)</td>
+                            <td id="spb-rev-daily">-</td>
+                            <td id="spb-rev-monthly">-</td>
+                            <td id="spb-rev-yearly">-</td>
+                        </tr>
+                        <tr>
+                            <td>Custo Eletricidade</td>
+                            <td id="spb-cost-daily">-</td>
+                            <td id="spb-cost-monthly">-</td>
+                            <td id="spb-cost-yearly">-</td>
+                        </tr>
+                        <tr>
+                            <td>Lucro Líquido</td>
+                            <td id="spb-profit-daily">-</td>
+                            <td id="spb-profit-monthly">-</td>
+                            <td id="spb-profit-yearly">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CENÁRIOS -->
+        <div id="scenarios" class="tab-content">
+            <div class="form-grid">
+                <div class="form-section">
+                    <h3>🎯 Escolha um Cenário</h3>
+                    <div class="scenario-selector">
+                        <button class="scenario-btn active" onclick="switchScenario('base')">
+                            📊 Base<br><small>Realista</small>
+                        </button>
+                        <button class="scenario-btn" onclick="switchScenario('pessimistic')">
+                            📉 Pessimista<br><small>BTC -20%, Eletricidade +30%</small>
+                        </button>
+                        <button class="scenario-btn" onclick="switchScenario('optimistic')">
+                            📈 Otimista<br><small>BTC +50%, Eletricidade -10%</small>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-section" id="scenario-inputs">
+                    <h3>⚙️ Parâmetros do Cenário</h3>
+                    <div class="form-group">
+                        <label>Multiplicador de Preço BTC</label>
+                        <input type="number" id="scenario-btc-mult" value="1.0" step="0.1" min="0.5" max="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Multiplicador de Eletricidade</label>
+                        <input type="number" id="scenario-elec-mult" value="1.0" step="0.1" min="0.5" max="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Multiplicador de Hashrate</label>
+                        <input type="number" id="scenario-hash-mult" value="1.0" step="0.1" min="0.5" max="2">
+                    </div>
+                    <button class="calculate-btn" onclick="calculateScenarios()">
+                        🧮 Comparar Cenários
+                    </button>
+                </div>
+            </div>
+
+            <div id="scenarios-results" class="hidden">
+                <div class="results">
+                    <h2>📊 Comparação de Cenários</h2>
+                    <div class="action-buttons">
+                        <button class="btn-secondary" onclick="exportScenariosPDF()">📄 Exportar Comparação</button>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="scenarios-chart"></canvas>
+                    </div>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Métrica</th>
+                            <th style="color: #f39c12;">Base</th>
+                            <th style="color: #e74c3c;">Pessimista</th>
+                            <th style="color: #27ae60;">Otimista</th>
+                        </tr>
+                        <tr>
+                            <td>Payback (dias)</td>
+                            <td id="sc-payback-base">-</td>
+                            <td id="sc-payback-pess">-</td>
+                            <td id="sc-payback-opt">-</td>
+                        </tr>
+                        <tr>
+                            <td>Receita Anual (USD)</td>
+                            <td id="sc-revenue-base">-</td>
+                            <td id="sc-revenue-pess">-</td>
+                            <td id="sc-revenue-opt">-</td>
+                        </tr>
+                        <tr>
+                            <td>Lucro Anual (USD)</td>
+                            <td id="sc-profit-base">-</td>
+                            <td id="sc-profit-pess">-</td>
+                            <td id="sc-profit-opt">-</td>
+                        </tr>
+                        <tr>
+                            <td>ROI Anual (%)</td>
+                            <td id="sc-roi-base">-</td>
+                            <td id="sc-roi-pess">-</td>
+                            <td id="sc-roi-opt">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: ANÁLISE DE SENSIBILIDADE -->
+        <div id="sensitivity" class="tab-content">
+            <div class="form-section">
+                <h3>📈 Análise de Sensibilidade</h3>
+                <p style="color: #bbb; margin-bottom: 15px;">
+                    Veja como mudanças em variáveis-chave impactam seu payback
+                </p>
+                <button class="calculate-btn" onclick="calculateSensitivity()">
+                    🔍 Gerar Matriz de Sensibilidade
+                </button>
+            </div>
+
+            <div id="sensitivity-results" class="hidden">
+                <div class="results">
+                    <h2>📊 Matriz de Sensibilidade - Payback (dias)</h2>
+                    <p style="color: #bbb; margin-bottom: 15px;">
+                        Variação de Preço BTC (linha) vs Custo de Eletricidade (coluna)
+                    </p>
+                    <div class="sensitivity-matrix">
+                        <div id="sensitivity-grid"></div>
+                    </div>
+
+                    <div class="chart-container" style="margin-top: 30px;">
+                        <h3 style="color: #f39c12; margin-bottom: 20px;">Gráfico de Sensibilidade</h3>
+                        <canvas id="sensitivity-chart"></canvas>
+                    </div>
+
+                    <div class="warning" style="margin-top: 30px;">
+                        <strong>💡 Interpretação:</strong><br>
+                        • Verde = Payback mais rápido (favorável)<br>
+                        • Vermelho = Payback mais longo (desfavorável)<br>
+                        • Quanto menor o número, melhor para você!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: MONTE CARLO -->
+        <div id="monte-carlo" class="tab-content">
+            <div class="form-section">
+                <h3>🎲 Simulação Monte Carlo</h3>
+                <p style="color: #bbb; margin-bottom: 15px;">
+                    1.000 simulações aleatórias para prever cenários possíveis
+                </p>
+                <div class="form-group">
+                    <label>Número de Simulações</label>
+                    <input type="number" id="mc-simulations" value="1000" step="100" min="100" max="10000">
+                </div>
+                <div class="form-group">
+                    <label>Variação de Preço BTC (%)</label>
+                    <input type="number" id="mc-btc-variance" value="30" step="5">
+                    <div class="info-text">Desvio padrão anual</div>
+                </div>
+                <div class="form-group">
+                    <label>Variação de Eletricidade (%)</label>
+                    <input type="number" id="mc-elec-variance" value="15" step="5">
+                    <div class="info-text">Desvio padrão anual</div>
+                </div>
+                <button class="calculate-btn" onclick="calculateMonteCarlo()">
+                    🎲 Executar Simulação
+                </button>
+            </div>
+
+            <div id="monte-carlo-results" class="hidden">
+                <div class="results">
+                    <h2>🎲 Resultados Monte Carlo</h2>
+                    <div class="action-buttons">
+                        <button class="btn-secondary" onclick="exportMonteCarloData()">📥 Baixar Dados</button>
+                    </div>
+
+                    <div class="monte-carlo-result">
+                        <h3 style="color: #f39c12; margin-bottom: 15px;">Payback (dias) - Estatísticas</h3>
+                        <div class="monte-carlo-stat">
+                            <strong>Mínimo:</strong> <span id="mc-min">-</span> dias
+                        </div>
+                        <div class="monte-carlo-stat">
+                            <strong>Máximo:</strong> <span id="mc-max">-</span> dias
+                        </div>
+                        <div class="monte-carlo-stat">
+                            <strong>Média:</strong> <span id="mc-mean">-</span> dias
+                        </div>
+                        <div class="monte-carlo-stat">
+                            <strong>Mediana:</strong> <span id="mc-median">-</span> dias
+                        </div>
+                        <div class="monte-carlo-stat">
+                            <strong>Desvio Padrão:</strong> <span id="mc-stddev">-</span> dias
+                        </div>
+                        <div class="monte-carlo-stat">
+                            <strong>Probabilidade < 2 anos:</strong> <span id="mc-prob">-</span>%
+                        </div>
+                    </div>
+
+                    <div class="chart-container" style="margin-top: 30px;">
+                        <canvas id="monte-carlo-chart"></canvas>
+                    </div>
+
+                    <div class="success" style="margin-top: 30px;">
+                        <strong>📊 Interpretação:</strong><br>
+                        A distribuição mostra todos os possíveis cenários. Uma distribuição estreita = resultados previsíveis.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: EXPORTAR PDF -->
+        <div id="pdf-export" class="tab-content">
+            <div class="results">
+                <h2>📄 Gerar Relatório Completo em PDF</h2>
+                
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>⚙️ Opções de Relatório</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="pdf-include-payback" checked>
+                                Simple Payback
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="pdf-include-scenarios" checked>
+                                Comparação de Cenários
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="pdf-include-sensitivity" checked>
+                                Análise de Sensibilidade
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="pdf-include-monte-carlo" checked>
+                                Monte Carlo
+                            </label>
+                        </div>
+                        <button class="calculate-btn" onclick="generateCompletePDF()">
+                            📥 Gerar e Baixar PDF
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>📋 Informações do Projeto</h3>
+                        <div class="form-group">
+                            <label>Nome do Projeto</label>
+                            <input type="text" id="pdf-project-name" value="Mining Operation">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Análise</label>
+                            <input type="text" id="pdf-analysis-date" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Analista / Responsável</label>
+                            <input type="text" id="pdf-analyst" value="Seu Nome">
+                        </div>
+                        <div class="form-group">
+                            <label>Notas Adicionais</label>
+                            <textarea id="pdf-notes" style="height: 100px; padding: 10px; background: #1a1a2e; border: 1px solid #444; border-radius: 5px; color: #fff;" placeholder="Adicione observações importantes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pdf-preview-container" class="hidden" style="margin-top: 30px;">
+                    <h3 style="color: #f39c12; margin-bottom: 20px;">Pré-visualização do Relatório</h3>
+                    <div id="pdf-content" class="pdf-section"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('pdf-analysis-date').value = new Date().toLocaleDateString('pt-BR');
+            fetchRealtimeBTCData();
+            document.getElementById('spb-miner-cost-per-th').addEventListener('change', updateSPBTotalCost);
+            document.getElementById('spb-miner-hash-rate').addEventListener('change', updateSPBTotalCost);
+        });
+
+        // ===== API REAL-TIME BITCOIN =====
+        async function fetchRealtimeBTCData() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true');
+                const data = await response.json();
+                const btcPrice = data.bitcoin.usd;
+                const change24h = data.bitcoin.usd_24h_change;
+                
+                document.getElementById('spb-btc-price').value = Math.round(btcPrice);
+                
+                const changeColor = change24h >= 0 ? '#27ae60' : '#e74c3c';
+                const changeSymbol = change24h >= 0 ? '📈' : '📉';
+                
+                document.getElementById('btc-real-time').innerHTML = `
+                    <strong style="font-size: 1.5em;">₿ ${btcPrice.toLocaleString('en-US', {maximumFractionDigits: 0})} USD</strong>
+                    <p style="margin-top: 10px; color: ${changeColor};">
+                        ${changeSymbol} ${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}% (24h)
+                    </p>
+                    <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">Dados em tempo real via CoinGecko</p>
+                `;
+            } catch (error) {
+                document.getElementById('btc-real-time').innerHTML = `
+                    <p style="color: #e74c3c;">⚠️ Erro ao carregar dados real-time</p>
+                    <p style="font-size: 0.9em; opacity: 0.8;">Usando valor padrão: $86.000</p>
+                `;
+            }
+        }
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== SCENARIO SWITCHING =====
+        function switchScenario(scenario) {
+            document.querySelectorAll('.scenario-btn').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const scenarios = {
+                base: { btc: 1.0, elec: 1.0, hash: 1.0 },
+                pessimistic: { btc: 0.8, elec: 1.3, hash: 1.5 },
+                optimistic: { btc: 1.5, elec: 0.9, hash: 0.8 }
+            };
+
+            const s = scenarios[scenario];
+            document.getElementById('scenario-btc-mult').value = s.btc;
+            document.getElementById('scenario-elec-mult').value = s.elec;
+            document.getElementById('scenario-hash-mult').value = s.hash;
+        }
+
+        // ===== AUTO CALCULATIONS =====
+        function updateSPBTotalCost() {
+            const costPerTh = parseFloat(document.getElementById('spb-miner-cost-per-th').value) || 0;
+            const hashRate = parseFloat(document.getElementById('spb-miner-hash-rate').value) || 0;
+            document.getElementById('spb-miner-total-cost').value = (costPerTh * hashRate).toFixed(0);
+        }
+
+        // ===== SIMPLE PAYBACK CALCULATION =====
+        function calculateSimplePayback() {
+            try {
+                const networkHash = parseFloat(document.getElementById('spb-network-hash').value);
+                const blockTime = parseFloat(document.getElementById('spb-block-time').value);
+                const blockReward = parseFloat(document.getElementById('spb-block-reward').value);
+                const btcPrice = parseFloat(document.getElementById('spb-btc-price').value);
+                const minerHashRate = parseFloat(document.getElementById('spb-miner-hash-rate').value);
+                const minerPower = parseFloat(document.getElementById('spb-miner-power').value);
+                const electricityCost = parseFloat(document.getElementById('spb-electricity-cost').value);
+                const poolFee = parseFloat(document.getElementById('spb-mining-fees').value) / 100;
+                const minerTotalCost = parseFloat(document.getElementById('spb-miner-total-cost').value);
+
+                const secondsPerDay = 86400;
+                const MILLION = 1000000;
+
+                const networkHashExa = networkHash * MILLION;
+                const networkPercentage = (minerHashRate / networkHashExa) * 100;
+                
+                const blocksPerDay = secondsPerDay / blockTime;
+                const btcPerDay = (blocksPerDay * blockReward * minerHashRate / networkHashExa);
+                const btcPerDayAfterFees = btcPerDay * (1 - poolFee);
+                
+                const revenuePerDay = btcPerDay * btcPrice;
+                const revenuePerDayAfterFees = btcPerDayAfterFees * btcPrice;
+                
+                const costPerDay = minerPower * electricityCost * 24;
+                const profitPerDay = revenuePerDayAfterFees - costPerDay;
+                
+                const paybackDays = minerTotalCost / profitPerDay;
+
+                document.getElementById('spb-network-percentage').textContent = networkPercentage.toExponential(2);
+                document.getElementById('spb-daily-revenue').textContent = revenuePerDayAfterFees.toFixed(2);
+                document.getElementById('spb-daily-cost').textContent = costPerDay.toFixed(2);
+                document.getElementById('spb-daily-profit').textContent = profitPerDay.toFixed(2);
+                document.getElementById('spb-payback-days').textContent = paybackDays.toFixed(0);
+                document.getElementById('spb-annual-revenue').textContent = (revenuePerDayAfterFees * 365).toFixed(0);
+
+                document.getElementById('spb-btc-daily').textContent = btcPerDayAfterFees.toFixed(6);
+                document.getElementById('spb-btc-monthly').textContent = (btcPerDayAfterFees * 30).toFixed(6);
+                document.getElementById('spb-btc-yearly').textContent = (btcPerDayAfterFees * 365).toFixed(6);
+
+                document.getElementById('spb-rev-daily').textContent = '$' + revenuePerDayAfterFees.toFixed(2);
+                document.getElementById('spb-rev-monthly').textContent = '$' + (revenuePerDayAfterFees * 30).toFixed(2);
+                document.getElementById('spb-rev-yearly').textContent = '$' + (revenuePerDayAfterFees * 365).toFixed(2);
+
+                document.getElementById('spb-cost-daily').textContent = '$' + costPerDay.toFixed(2);
+                document.getElementById('spb-cost-monthly').textContent = '$' + (costPerDay * 30).toFixed(2);
+                document.getElementById('spb-cost-yearly').textContent = '$' + (costPerDay * 365).toFixed(2);
+
+                document.getElementById('spb-profit-daily').textContent = '$' + profitPerDay.toFixed(2);
+                document.getElementById('spb-profit-monthly').textContent = '$' + (profitPerDay * 30).toFixed(2);
+                document.getElementById('spb-profit-yearly').textContent = '$' + (profitPerDay * 365).toFixed(2);
+
+                // Draw breakeven chart
+                drawBreakevenChart(minerTotalCost, profitPerDay);
+                document.getElementById('spb-results').classList.remove('hidden');
+
+                // Store for scenarios
+                window.lastCalculation = {
+                    networkHash, blockTime, blockReward, btcPrice, minerHashRate, 
+                    minerPower, electricityCost, poolFee, minerTotalCost,
+                    paybackDays, profitPerDay
+                };
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
+        }
+
+        // ===== GRÁFICO BREAKEVEN =====
+        let breakEvenChart = null;
+
+        function drawBreakevenChart(investment, dailyProfit) {
+            const days = [];
+            const cumulativeProfit = [];
+            let cumulative = -investment;
+
+            for (let d = 0; d <= 1000; d += 50) {
+                days.push(d);
+                cumulative = -investment + (d * dailyProfit);
+                cumulativeProfit.push(cumulative);
+            }
+
+            const ctx = document.getElementById('spb-breakeven-chart').getContext('2d');
+            if (breakEvenChart) breakEvenChart.destroy();
+
+            breakEvenChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [
+                        {
+                            label: 'Fluxo de Caixa Acumulado',
+                            data: cumulativeProfit,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 0,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Breakeven (linha)',
+                            data: Array(days.length).fill(0),
+                            borderColor: '#f39c12',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ddd' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#888',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { color: '#888' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== CENÁRIOS =====
+        function calculateScenarios() {
+            if (!window.lastCalculation) {
+                alert('Calcule o Simple Payback primeiro!');
+                return;
+            }
+
+            const calc = window.lastCalculation;
+            const btcMult = parseFloat(document.getElementById('scenario-btc-mult').value);
+            const elecMult = parseFloat(document.getElementById('scenario-elec-mult').value);
+            const hashMult = parseFloat(document.getElementById('scenario-hash-mult').value);
+
+            const scenarios = {
+                base: { btc: 1, elec: 1, hash: 1 },
+                pessimistic: { btc: btcMult, elec: elecMult, hash: hashMult },
+                optimistic: { btc: 1 / btcMult, elec: 1 / elecMult, hash: 1 / hashMult }
+            };
+
+            const results = {};
+
+            for (let [name, mults] of Object.entries(scenarios)) {
+                const networkHashExa = calc.networkHash * mults.hash * 1000000;
+                const networkPercentage = (calc.minerHashRate / networkHashExa);
+                
+                const blocksPerDay = 86400 / calc.blockTime;
+                const btcPerDay = (blocksPerDay * calc.blockReward * calc.minerHashRate / networkHashExa);
+                const btcPerDayAfterFees = btcPerDay * (1 - calc.poolFee);
+                
+                const btcPriceAdj = calc.btcPrice * mults.btc;
+                const electricityCostAdj = calc.electricityCost * mults.elec;
+                
+                const revenuePerDayAfterFees = btcPerDayAfterFees * btcPriceAdj;
+                const costPerDay = calc.minerPower * electricityCostAdj * 24;
+                const profitPerDay = revenuePerDayAfterFees - costPerDay;
+                const paybackDays = calc.minerTotalCost / profitPerDay;
+
+                results[name] = {
+                    payback: paybackDays,
+                    revenue: revenuePerDayAfterFees * 365,
+                    profit: profitPerDay * 365,
+                    roi: ((profitPerDay * 365) / calc.minerTotalCost * 100)
+                };
+            }
+
+            // Display
+            document.getElementById('sc-payback-base').textContent = results.base.payback.toFixed(0);
+            document.getElementById('sc-payback-pess').textContent = results.pessimistic.payback.toFixed(0);
+            document.getElementById('sc-payback-opt').textContent = results.optimistic.payback.toFixed(0);
+
+            document.getElementById('sc-revenue-base').textContent = '$' + results.base.revenue.toFixed(0);
+            document.getElementById('sc-revenue-pess').textContent = '$' + results.pessimistic.revenue.toFixed(0);
+            document.getElementById('sc-revenue-opt').textContent = '$' + results.optimistic.revenue.toFixed(0);
+
+            document.getElementById('sc-profit-base').textContent = '$' + results.base.profit.toFixed(0);
+            document.getElementById('sc-profit-pess').textContent = '$' + results.pessimistic.profit.toFixed(0);
+            document.getElementById('sc-profit-opt').textContent = '$' + results.optimistic.profit.toFixed(0);
+
+            document.getElementById('sc-roi-base').textContent = results.base.roi.toFixed(1);
+            document.getElementById('sc-roi-pess').textContent = results.pessimistic.roi.toFixed(1);
+            document.getElementById('sc-roi-opt').textContent = results.optimistic.roi.toFixed(1);
+
+            drawScenariosChart(results);
+            document.getElementById('scenarios-results').classList.remove('hidden');
+
+            window.scenariosResults = results;
+        }
+
+        let scenariosChart = null;
+
+        function drawScenariosChart(results) {
+            const ctx = document.getElementById('scenarios-chart').getContext('2d');
+            if (scenariosChart) scenariosChart.destroy();
+
+            scenariosChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Payback (dias)', 'Receita Anual', 'Lucro Anual', 'ROI Anual (%)'],
+                    datasets: [
+                        {
+                            label: 'Base',
+                            data: [results.base.payback, results.base.revenue/100, results.base.profit/100, results.base.roi],
+                            backgroundColor: '#f39c12'
+                        },
+                        {
+                            label: 'Pessimista',
+                            data: [results.pessimistic.payback, results.pessimistic.revenue/100, results.pessimistic.profit/100, results.pessimistic.roi],
+                            backgroundColor: '#e74c3c'
+                        },
+                        {
+                            label: 'Otimista',
+                            data: [results.optimistic.payback, results.optimistic.revenue/100, results.optimistic.profit/100, results.optimistic.roi],
+                            backgroundColor: '#27ae60'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ddd' } }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#888' },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { color: '#888' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== ANÁLISE DE SENSIBILIDADE =====
+        function calculateSensitivity() {
+            if (!window.lastCalculation) {
+                alert('Calcule o Simple Payback primeiro!');
+                return;
+            }
+
+            const calc = window.lastCalculation;
+            
+            const btcRange = [0.7, 0.85, 1.0, 1.15, 1.3];
+            const elecRange = [0.7, 0.85, 1.0, 1.15, 1.3];
+            
+            const matrix = [];
+
+            for (let btcMult of btcRange) {
+                const row = [];
+                for (let elecMult of elecRange) {
+                    const btcPriceAdj = calc.btcPrice * btcMult;
+                    const electricityCostAdj = calc.electricityCost * elecMult;
+                    
+                    const blocksPerDay = 86400 / calc.blockTime;
+                    const btcPerDay = blocksPerDay * calc.blockReward * calc.minerHashRate / (calc.networkHash * 1000000);
+                    const btcPerDayAfterFees = btcPerDay * (1 - calc.poolFee);
+                    
+                    const revenuePerDayAfterFees = btcPerDayAfterFees * btcPriceAdj;
+                    const costPerDay = calc.minerPower * electricityCostAdj * 24;
+                    const profitPerDay = revenuePerDayAfterFees - costPerDay;
+                    const paybackDays = calc.minerTotalCost / profitPerDay;
+                    
+                    row.push(paybackDays);
+                }
+                matrix.push(row);
+            }
+
+            // Display matrix
+            let gridHTML = '<div class="sensitivity-grid">';
+            gridHTML += '<div class="sensitivity-cell header">BTC \\ Elec</div>';
+            for (let e of elecRange) {
+                gridHTML += `<div class="sensitivity-cell header">${(e * 100).toFixed(0)}%</div>`;
+            }
+            
+            for (let i = 0; i < btcRange.length; i++) {
+                gridHTML += `<div class="sensitivity-cell header">${(btcRange[i] * 100).toFixed(0)}%</div>`;
+                for (let j = 0; j < elecRange.length; j++) {
+                    const val = matrix[i][j];
+                    const min = Math.min(...matrix.flat());
+                    const max = Math.max(...matrix.flat());
+                    const normalized = (val - min) / (max - min);
+                    
+                    let cellClass = 'sensitivity-cell';
+                    if (normalized < 0.33) cellClass += ' positive';
+                    else if (normalized > 0.66) cellClass += ' negative';
+                    
+                    gridHTML += `<div class="${cellClass}">${val.toFixed(0)}</div>`;
+                }
+            }
+            gridHTML += '</div>';
+
+            document.getElementById('sensitivity-grid').innerHTML = gridHTML;
+
+            // Chart
+            drawSensitivityChart(btcRange, matrix);
+            document.getElementById('sensitivity-results').classList.remove('hidden');
+        }
+
+        let sensitivityChart = null;
+
+        function drawSensitivityChart(btcRange, matrix) {
+            const ctx = document.getElementById('sensitivity-chart').getContext('2d');
+            if (sensitivityChart) sensitivityChart.destroy();
+
+            const datasets = matrix.map((row, idx) => ({
+                label: `BTC ${(btcRange[idx] * 100).toFixed(0)}%`,
+                data: row,
+                borderColor: ['#e74c3c', '#f39c12', '#f1c40f', '#27ae60', '#3498db'][idx],
+                tension: 0.4,
+                fill: false
+            }));
+
+            sensitivityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['70%', '85%', '100%', '115%', '130%'],
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ddd' } }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#888' },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { color: '#888' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== MONTE CARLO =====
+        function calculateMonteCarlo() {
+            if (!window.lastCalculation) {
+                alert('Calcule o Simple Payback primeiro!');
+                return;
+            }
+
+            const calc = window.lastCalculation;
+            const numSims = parseInt(document.getElementById('mc-simulations').value);
+            const btcVariance = parseFloat(document.getElementById('mc-btc-variance').value) / 100;
+            const elecVariance = parseFloat(document.getElementById('mc-elec-variance').value) / 100;
+
+            const results = [];
+
+            for (let i = 0; i < numSims; i++) {
+                // Random normal distribution
+                const btcMult = 1 + (Math.random() - 0.5) * 2 * btcVariance;
+                const elecMult = 1 + (Math.random() - 0.5) * 2 * elecVariance;
+
+                const btcPriceAdj = calc.btcPrice * btcMult;
+                const electricityCostAdj = calc.electricityCost * elecMult;
+
+                const blocksPerDay = 86400 / calc.blockTime;
+                const btcPerDay = blocksPerDay * calc.blockReward * calc.minerHashRate / (calc.networkHash * 1000000);
+                const btcPerDayAfterFees = btcPerDay * (1 - calc.poolFee);
+
+                const revenuePerDayAfterFees = btcPerDayAfterFees * btcPriceAdj;
+                const costPerDay = calc.minerPower * electricityCostAdj * 24;
+                const profitPerDay = revenuePerDayAfterFees - costPerDay;
+                const paybackDays = calc.minerTotalCost / profitPerDay;
+
+                results.push(paybackDays);
+            }
+
+            results.sort((a, b) => a - b);
+
+            const min = Math.min(...results);
+            const max = Math.max(...results);
+            const mean = results.reduce((a, b) => a + b) / results.length;
+            const median = results[Math.floor(results.length / 2)];
+            const stddev = Math.sqrt(results.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / results.length);
+            const prob730 = (results.filter(r => r < 730).length / results.length) * 100;
+
+            document.getElementById('mc-min').textContent = min.toFixed(0);
+            document.getElementById('mc-max').textContent = max.toFixed(0);
+            document.getElementById('mc-mean').textContent = mean.toFixed(0);
+            document.getElementById('mc-median').textContent = median.toFixed(0);
+            document.getElementById('mc-stddev').textContent = stddev.toFixed(0);
+            document.getElementById('mc-prob').textContent = prob730.toFixed(1);
+
+            drawMonteCarloChart(results);
+            document.getElementById('monte-carlo-results').classList.remove('hidden');
+
+            window.monteCarloResults = results;
+        }
+
+        let monteCarloChart = null;
+
+        function drawMonteCarloChart(results) {
+            const ctx = document.getElementById('monte-carlo-chart').getContext('2d');
+            if (monteCarloChart) monteCarloChart.destroy();
+
+            const bins = 50;
+            const min = Math.min(...results);
+            const max = Math.max(...results);
+            const binWidth = (max - min) / bins;
+            const histogram = Array(bins).fill(0);
+
+            for (let result of results) {
+                const binIndex = Math.floor((result - min) / binWidth);
+                if (binIndex < bins) histogram[binIndex]++;
+            }
+
+            const labels = [];
+            for (let i = 0; i < bins; i++) {
+                labels.push((min + i * binWidth).toFixed(0));
+            }
+
+            monteCarloChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Frequência',
+                        data: histogram,
+                        backgroundColor: '#f39c12',
+                        borderColor: '#f39c12',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'x',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#888' },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { display: false },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== EXPORTAR PDF =====
+        function exportToPDF(type) {
+            const element = document.getElementById(type === 'spb' ? 'spb-results' : 'scenarios-results');
+            const opt = {
+                margin: 10,
+                filename: `mining-analysis-${new Date().toLocaleDateString()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function exportScenariosPDF() {
+            exportToPDF('scenarios');
+        }
+
+        function exportMonteCarloData() {
+            if (!window.monteCarloResults) {
+                alert('Execute a simulação primeiro!');
+                return;
+            }
+
+            let csv = 'Payback (dias)\n';
+            for (let result of window.monteCarloResults) {
+                csv += result.toFixed(2) + '\n';
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'monte-carlo-results.csv';
+            link.click();
+        }
+
+        // ===== RELATÓRIO COMPLETO PDF =====
+        function generateCompletePDF() {
+            const projectName = document.getElementById('pdf-project-name').value;
+            const analyst = document.getElementById('pdf-analyst').value;
+            const notes = document.getElementById('pdf-notes').value;
+            const analysisDate = document.getElementById('pdf-analysis-date').value;
+
+            if (!window.lastCalculation) {
+                alert('Calcule o Simple Payback primeiro!');
+                return;
+            }
+
+            let content = `
+            <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #333; padding-bottom: 20px;">
+                <h1 style="color: #f39c12; margin-bottom: 10px;">⛏️ Relatório de Análise Financeira</h1>
+                <h2 style="color: #333; margin: 10px 0;">Bitcoin Mining Operation</h2>
+                <p><strong>Projeto:</strong> ${projectName}</p>
+                <p><strong>Data:</strong> ${analysisDate}</p>
+                <p><strong>Analista:</strong> ${analyst}</p>
+            </div>
+
+            <div style="margin-bottom: 30px; padding: 15px; background: #f0f0f0; border-left: 4px solid #f39c12;">
+                <h3 style="color: #333; margin-bottom: 10px;">📋 Observações</h3>
+                <p style="color: #666;">${notes || 'Nenhuma observação adicional'}</p>
+            </div>
+            `;
+
+            if (document.getElementById('pdf-include-payback').checked && window.lastCalculation) {
+                content += `
+                <div style="page-break-inside: avoid; margin-bottom: 30px;">
+                    <h2 style="color: #f39c12; border-bottom: 2px solid #f39c12; padding-bottom: 10px;">📊 Simple Payback Analysis</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                        <tr style="background: #f39c12; color: white;">
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Métrica</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Diário</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Mensal</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Anual</th>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Receita</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('spb-rev-daily').textContent}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('spb-rev-monthly').textContent}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('spb-rev-yearly').textContent}</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="border: 1px solid #ddd; padding: 10px;">Custo</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('spb-cost-daily').textContent}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('spb-cost-monthly').textContent}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('spb-cost-yearly').textContent}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;"><strong>Lucro</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;"><strong>${document.getElementById('spb-profit-daily').textContent}</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;"><strong>${document.getElementById('spb-profit-monthly').textContent}</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;"><strong>${document.getElementById('spb-profit-yearly').textContent}</strong></td>
+                        </tr>
+                    </table>
+                    <p style="color: #333; margin: 15px 0;"><strong>Período de Payback:</strong> ${document.getElementById('spb-payback-days').textContent} dias (~${(parseFloat(document.getElementById('spb-payback-days').textContent) / 365).toFixed(1)} anos)</p>
+                </div>
+                `;
+            }
+
+            if (document.getElementById('pdf-include-scenarios').checked && window.scenariosResults) {
+                content += `
+                <div style="page-break-inside: avoid; margin-bottom: 30px;">
+                    <h2 style="color: #f39c12; border-bottom: 2px solid #f39c12; padding-bottom: 10px;">🎯 Comparação de Cenários</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                        <tr style="background: #f39c12; color: white;">
+                            <th style="border: 1px solid #ddd; padding: 10px;">Cenário</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Payback (dias)</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Lucro Anual</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">ROI (%)</th>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;"><strong>Base</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${window.scenariosResults.base.payback.toFixed(0)}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">$${window.scenariosResults.base.profit.toFixed(0)}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${window.scenariosResults.base.roi.toFixed(1)}%</td>
+                        </tr>
+                        <tr style="background: #fff3cd;">
+                            <td style="border: 1px solid #ddd; padding: 10px;"><strong>Pessimista</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${window.scenariosResults.pessimistic.payback.toFixed(0)}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">$${window.scenariosResults.pessimistic.profit.toFixed(0)}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${window.scenariosResults.pessimistic.roi.toFixed(1)}%</td>
+                        </tr>
+                        <tr style="background: #d4edda;">
+                            <td style="border: 1px solid #ddd; padding: 10px;"><strong>Otimista</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${window.scenariosResults.optimistic.payback.toFixed(0)}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">$${window.scenariosResults.optimistic.profit.toFixed(0)}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${window.scenariosResults.optimistic.roi.toFixed(1)}%</td>
+                        </tr>
+                    </table>
+                </div>
+                `;
+            }
+
+            if (document.getElementById('pdf-include-monte-carlo').checked && window.monteCarloResults) {
+                content += `
+                <div style="page-break-inside: avoid; margin-bottom: 30px;">
+                    <h2 style="color: #f39c12; border-bottom: 2px solid #f39c12; padding-bottom: 10px;">🎲 Simulação Monte Carlo</h2>
+                    <p style="color: #666; margin-bottom: 15px;"><strong>${window.monteCarloResults.length}</strong> simulações realizadas</p>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f39c12; color: white;">
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Estatística</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Valor</th>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Mínimo</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('mc-min').textContent} dias</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="border: 1px solid #ddd; padding: 10px;">Máximo</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('mc-max').textContent} dias</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Média</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('mc-mean').textContent} dias</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="border: 1px solid #ddd; padding: 10px;">Mediana</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('mc-median').textContent} dias</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Desvio Padrão</td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">${document.getElementById('mc-stddev').textContent} dias</td>
+                        </tr>
+                        <tr style="background: #d4edda;">
+                            <td style="border: 1px solid #ddd; padding: 10px;"><strong>Prob. Payback < 2 anos</strong></td>
+                            <td style="border: 1px solid #ddd; padding: 10px; text-align: right;"><strong>${document.getElementById('mc-prob').textContent}%</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                `;
+            }
+
+            content += `
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ccc; font-size: 12px; color: #999;">
+                <p>Relatório gerado automaticamente em ${new Date().toLocaleString('pt-BR')}</p>
+                <p>⚠️ Este relatório é baseado em suposições e dados do usuário. Não constitui aconselhamento financeiro profissional.</p>
+            </div>
+            `;
+
+            document.getElementById('pdf-content').innerHTML = content;
+
+            const opt = {
+                margin: 10,
+                filename: `mining-report-${projectName}-${new Date().toLocaleDateString()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+
+            html2pdf().set(opt).from(document.getElementById('pdf-content')).save();
+        }
+
+        // ===== HELPER FUNCTIONS =====
+        function showBreakeven() {
+            document.getElementById('spb-results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
