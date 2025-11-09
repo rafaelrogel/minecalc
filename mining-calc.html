@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Mining Financial Model</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #bbb;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #444;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: #0f3460;
+            border: none;
+            color: #bbb;
+            cursor: pointer;
+            font-size: 1em;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #f39c12;
+            border-bottom-color: #f39c12;
+            background: #16213e;
+        }
+
+        .tab-button:hover {
+            background: #1a3a52;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .form-section h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ddd;
+            font-size: 0.95em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+        }
+
+        .info-text {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        button.calculate-btn {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+
+        button.calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .results {
+            background: #0f3460;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .results h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #f39c12;
+            text-align: center;
+        }
+
+        .result-card h4 {
+            color: #bbb;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .result-card .value {
+            font-size: 2em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .result-card .unit {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .chart-container {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            height: 400px;
+        }
+
+        .warning {
+            background: #7f8c8d;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        .warning strong {
+            color: #e74c3c;
+        }
+
+        .success {
+            background: #27ae60;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        .comparison-table th {
+            background: #1a1a2e;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:hover {
+            background: #1a3a52;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ Bitcoin Mining Financial Model</h1>
+            <p>Calculadora profissional para análise de projetos de mineração</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('simple-payback')">
+                📊 Simple Payback
+            </button>
+            <button class="tab-button" onclick="switchTab('cashflow')">
+                💰 Cashflow Analysis
+            </button>
+        </div>
+
+        <!-- TAB 1: SIMPLE PAYBACK -->
+        <div id="simple-payback" class="tab-content active">
+            <div class="form-grid">
+                <!-- PROFITABILITY INPUTS -->
+                <div class="form-section">
+                    <h3>📈 Dados da Rede Bitcoin</h3>
+                    <div class="form-group">
+                        <label>Network Hash Rate (EH/s)</label>
+                        <input type="number" id="spb-network-hash" value="760" step="0.1">
+                        <div class="info-text">Taxa de hash atual da rede</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Block Time (segundos)</label>
+                        <input type="number" id="spb-block-time" value="600" step="1">
+                        <div class="info-text">Tempo entre blocos: 600 = 10 minutos</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Block Reward (BTC)</label>
+                        <input type="number" id="spb-block-reward" value="3.125" step="0.001">
+                        <div class="info-text">Recompensa por bloco minerado</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Preço do Bitcoin (USD)</label>
+                        <input type="number" id="spb-btc-price" value="86000" step="100">
+                        <div class="info-text">Preço atual do BTC</div>
+                    </div>
+                </div>
+
+                <!-- COST INPUTS -->
+                <div class="form-section">
+                    <h3>💵 Custos do Minerador</h3>
+                    <div class="form-group">
+                        <label>Custo do Minerador ($/TH/s)</label>
+                        <input type="number" id="spb-miner-cost-per-th" value="25" step="1">
+                        <div class="info-text">Preço por unidade de hash</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Hash Rate do Minerador (TH/s)</label>
+                        <input type="number" id="spb-miner-hash-rate" value="860" step="1">
+                        <div class="info-text">Ex: Antminer S21 = 860 TH/s</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Custo Total do Minerador (USD)</label>
+                        <input type="number" id="spb-miner-total-cost" value="21500" readonly>
+                        <div class="info-text">Calculado automaticamente</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Potência do Minerador (kW)</label>
+                        <input type="number" id="spb-miner-power" value="11.18" step="0.01">
+                        <div class="info-text">Consumo de energia</div>
+                    </div>
+                </div>
+
+                <!-- ELECTRICITY & FEES -->
+                <div class="form-section">
+                    <h3>⚡ Eletricidade & Taxas</h3>
+                    <div class="form-group">
+                        <label>Custo da Eletricidade ($/kWh)</label>
+                        <input type="number" id="spb-electricity-cost" value="0.05" step="0.001">
+                        <div class="info-text">Seu custo por kilowatt-hora</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Taxa da Pool de Mineração (%)</label>
+                        <input type="number" id="spb-mining-fees" value="2" step="0.1">
+                        <div class="info-text">Exemplo: F2Pool = 2.5%</div>
+                    </div>
+                    <button class="calculate-btn" onclick="calculateSimplePayback()">
+                        🧮 Calcular Payback
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="spb-results" class="hidden">
+                <div class="results">
+                    <h2>✅ Resultados - Simple Payback</h2>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Sua % da Rede</h4>
+                            <div class="value" id="spb-network-percentage">-</div>
+                            <div class="unit">%</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Receita Diária</h4>
+                            <div class="value" id="spb-daily-revenue">-</div>
+                            <div class="unit">USD/dia</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Custo Diário Eletricidade</h4>
+                            <div class="value" id="spb-daily-cost">-</div>
+                            <div class="unit">USD/dia</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Lucro Diário</h4>
+                            <div class="value" id="spb-daily-profit">-</div>
+                            <div class="unit">USD/dia</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Payback</h4>
+                            <div class="value" id="spb-payback-days">-</div>
+                            <div class="unit">dias (~2,0 anos)</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Receita Anual</h4>
+                            <div class="value" id="spb-annual-revenue">-</div>
+                            <div class="unit">USD/ano</div>
+                        </div>
+                    </div>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Diário</th>
+                            <th>Mensal</th>
+                            <th>Anual</th>
+                        </tr>
+                        <tr>
+                            <td>Bitcoin Minerado</td>
+                            <td id="spb-btc-daily">-</td>
+                            <td id="spb-btc-monthly">-</td>
+                            <td id="spb-btc-yearly">-</td>
+                        </tr>
+                        <tr>
+                            <td>Receita (após taxas)</td>
+                            <td id="spb-rev-daily">-</td>
+                            <td id="spb-rev-monthly">-</td>
+                            <td id="spb-rev-yearly">-</td>
+                        </tr>
+                        <tr>
+                            <td>Custo Eletricidade</td>
+                            <td id="spb-cost-daily">-</td>
+                            <td id="spb-cost-monthly">-</td>
+                            <td id="spb-cost-yearly">-</td>
+                        </tr>
+                        <tr>
+                            <td>Lucro Líquido</td>
+                            <td id="spb-profit-daily">-</td>
+                            <td id="spb-profit-monthly">-</td>
+                            <td id="spb-profit-yearly">-</td>
+                        </tr>
+                    </table>
+
+                    <div class="warning">
+                        <strong>⚠️ Limitações deste modelo:</strong><br>
+                        • Preço do BTC é assumido como constante<br>
+                        • Hashrate da rede não varia<br>
+                        • Sem impostos ou depreciação<br>
+                        • Sem custos de manutenção<br>
+                        ➜ Use o modelo "Cashflow Analysis" para análise mais realista!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CASHFLOW ANALYSIS -->
+        <div id="cashflow" class="tab-content">
+            <div class="form-grid">
+                <!-- PROJECT INPUTS -->
+                <div class="form-section">
+                    <h3>📅 Parâmetros do Projeto</h3>
+                    <div class="form-group">
+                        <label>Período de Operação (anos)</label>
+                        <input type="number" id="cf-period" value="5" step="1" min="1" max="30">
+                        <div class="info-text">Duração total do projeto</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Moeda</label>
+                        <select id="cf-currency">
+                            <option value="USD">USD - Dólar Americano</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="BTC">BTC - Bitcoin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- PRODUCTION INPUTS -->
+                <div class="form-section">
+                    <h3>⛏️ Produção de Mineração</h3>
+                    <div class="form-group">
+                        <label>Número de Mineradores</label>
+                        <input type="number" id="cf-miners" value="1" step="1" min="1">
+                        <div class="info-text">Quantidade de máquinas</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Potência por Minerador (kW)</label>
+                        <input type="number" id="cf-power-per-miner" value="11.18" step="0.1">
+                        <div class="info-text">Consumo em kilowatts</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Produção Equivalente (MWh/ano)</label>
+                        <input type="number" id="cf-production" value="49" readonly>
+                        <div class="info-text">Calculado automaticamente</div>
+                    </div>
+                </div>
+
+                <!-- CAPEX -->
+                <div class="form-section">
+                    <h3>💰 Investimento Inicial (CAPEX)</h3>
+                    <div class="form-group">
+                        <label>Custo por Minerador (USD)</label>
+                        <input type="number" id="cf-cost-per-miner" value="25000" step="1000">
+                        <div class="info-text">Preço unitário com setup</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Custo Total (USD)</label>
+                        <input type="number" id="cf-capex" value="25000" readonly>
+                        <div class="info-text">Calculado automaticamente</div>
+                    </div>
+                </div>
+
+                <!-- OPEX -->
+                <div class="form-section">
+                    <h3>⚡ Custos Operacionais (OPEX)</h3>
+                    <div class="form-group">
+                        <label>Custo de Eletricidade (USD/kWh)</label>
+                        <input type="number" id="cf-electricity" value="0.05" step="0.001">
+                        <div class="info-text">Seu custo por kWh</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Custos de Manutenção Anual (USD)</label>
+                        <input type="number" id="cf-maintenance" value="1000" step="100">
+                        <div class="info-text">Manutenção e suporte</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Taxa da Pool (%)</label>
+                        <input type="number" id="cf-pool-fee" value="2" step="0.1">
+                        <div class="info-text">Taxa de mineração</div>
+                    </div>
+                </div>
+
+                <!-- REVENUE -->
+                <div class="form-section">
+                    <h3>💵 Receita</h3>
+                    <div class="form-group">
+                        <label>Preço do Bitcoin Inicial (USD)</label>
+                        <input type="number" id="cf-btc-price" value="86000" step="1000">
+                        <div class="info-text">Preço atual</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Escalação Anual de Preço (%)</label>
+                        <input type="number" id="cf-price-escalation" value="1" step="0.1">
+                        <div class="info-text">Crescimento esperado por ano</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Escalação de Custo Elétrico (%)</label>
+                        <input type="number" id="cf-cost-escalation" value="1" step="0.1">
+                        <div class="info-text">Inflação na eletricidade</div>
+                    </div>
+                </div>
+
+                <!-- FINANCING -->
+                <div class="form-section">
+                    <h3>🏦 Financiamento (Opcional)</h3>
+                    <div class="form-group">
+                        <label>% Financiado com Dívida</label>
+                        <input type="number" id="cf-debt-percent" value="0" step="1" min="0" max="100">
+                        <div class="info-text">0 = sem dívida, 50 = 50% empréstimo</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo do Empréstimo (anos)</label>
+                        <input type="number" id="cf-debt-tenor" value="5" step="1">
+                        <div class="info-text">Tempo para pagar</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Taxa de Juros Anual (%)</label>
+                        <input type="number" id="cf-interest-rate" value="4" step="0.1">
+                        <div class="info-text">Taxa de juros anual</div>
+                    </div>
+                </div>
+
+                <!-- TAXES & DEPRECIATION -->
+                <div class="form-section">
+                    <h3>🏛️ Impostos & Depreciação</h3>
+                    <div class="form-group">
+                        <label>Taxa de Imposto (%)</label>
+                        <input type="number" id="cf-tax-rate" value="21" step="1">
+                        <div class="info-text">Imposto corporativo</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Depreciação (anos)</label>
+                        <input type="number" id="cf-depreciation" value="5" step="1">
+                        <div class="info-text">Período de depreciação linear</div>
+                    </div>
+                    <button class="calculate-btn" onclick="calculateCashflow()">
+                        🧮 Calcular Análise de Cashflow
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="cf-results" class="hidden">
+                <div class="results">
+                    <h2>✅ Resultados - Cashflow Analysis</h2>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>NPV do Projeto</h4>
+                            <div class="value" id="cf-npv">-</div>
+                            <div class="unit">USD (PV)</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>IRR do Projeto</h4>
+                            <div class="value" id="cf-irr">-</div>
+                            <div class="unit">% ao ano</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>DSCR Mínimo</h4>
+                            <div class="value" id="cf-dscr">-</div>
+                            <div class="unit">(mínimo: 1.2)</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Payback Simples</h4>
+                            <div class="value" id="cf-payback">-</div>
+                            <div class="unit">anos</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Receita Total</h4>
+                            <div class="value" id="cf-total-revenue">-</div>
+                            <div class="unit">USD</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Lucro Líquido</h4>
+                            <div class="value" id="cf-net-profit">-</div>
+                            <div class="unit">USD</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="cf-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== TAB SWITCHING =====
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== AUTO CALCULATIONS =====
+        document.getElementById('spb-miner-cost-per-th').addEventListener('change', updateSPBTotalCost);
+        document.getElementById('spb-miner-hash-rate').addEventListener('change', updateSPBTotalCost);
+        document.getElementById('cf-miners').addEventListener('change', updateCFProduction);
+        document.getElementById('cf-power-per-miner').addEventListener('change', updateCFProduction);
+        document.getElementById('cf-cost-per-miner').addEventListener('change', updateCFCapex);
+        document.getElementById('cf-miners').addEventListener('change', updateCFCapex);
+
+        function updateSPBTotalCost() {
+            const costPerTh = parseFloat(document.getElementById('spb-miner-cost-per-th').value) || 0;
+            const hashRate = parseFloat(document.getElementById('spb-miner-hash-rate').value) || 0;
+            document.getElementById('spb-miner-total-cost').value = (costPerTh * hashRate).toFixed(0);
+        }
+
+        function updateCFProduction() {
+            const miners = parseFloat(document.getElementById('cf-miners').value) || 0;
+            const power = parseFloat(document.getElementById('cf-power-per-miner').value) || 0;
+            const mwh = (miners * power * 24 * 365) / 1000;
+            document.getElementById('cf-production').value = mwh.toFixed(2);
+        }
+
+        function updateCFCapex() {
+            const miners = parseFloat(document.getElementById('cf-miners').value) || 0;
+            const costPerMiner = parseFloat(document.getElementById('cf-cost-per-miner').value) || 0;
+            document.getElementById('cf-capex').value = (miners * costPerMiner).toFixed(0);
+        }
+
+        // ===== SIMPLE PAYBACK CALCULATION =====
+        function calculateSimplePayback() {
+            try {
+                // Get inputs
+                const networkHash = parseFloat(document.getElementById('spb-network-hash').value);
+                const blockTime = parseFloat(document.getElementById('spb-block-time').value);
+                const blockReward = parseFloat(document.getElementById('spb-block-reward').value);
+                const btcPrice = parseFloat(document.getElementById('spb-btc-price').value);
+                const minerHashRate = parseFloat(document.getElementById('spb-miner-hash-rate').value);
+                const minerPower = parseFloat(document.getElementById('spb-miner-power').value);
+                const electricityCost = parseFloat(document.getElementById('spb-electricity-cost').value);
+                const poolFee = parseFloat(document.getElementById('spb-mining-fees').value) / 100;
+                const minerTotalCost = parseFloat(document.getElementById('spb-miner-total-cost').value);
+
+                // Constants
+                const secondsPerDay = 86400;
+                const MILLION = 1000000;
+
+                // Calculations
+                const networkHashExa = networkHash * MILLION; // Convert to TH/s
+                const networkPercentage = (minerHashRate / networkHashExa) * 100;
+                
+                const blocksPerDay = secondsPerDay / blockTime;
+                const btcPerDay = (blocksPerDay * blockReward * minerHashRate / networkHashExa);
+                const btcPerDayAfterFees = btcPerDay * (1 - poolFee);
+                
+                const revenuePerDay = btcPerDay * btcPrice;
+                const revenuePerDayAfterFees = btcPerDayAfterFees * btcPrice;
+                
+                const costPerDay = minerPower * electricityCost * 24;
+                const profitPerDay = revenuePerDayAfterFees - costPerDay;
+                
+                const paybackDays = minerTotalCost / profitPerDay;
+                const paybackYears = paybackDays / 365;
+
+                // Display results
+                document.getElementById('spb-network-percentage').textContent = networkPercentage.toExponential(2);
+                document.getElementById('spb-daily-revenue').textContent = revenuePerDayAfterFees.toFixed(2);
+                document.getElementById('spb-daily-cost').textContent = costPerDay.toFixed(2);
+                document.getElementById('spb-daily-profit').textContent = profitPerDay.toFixed(2);
+                document.getElementById('spb-payback-days').textContent = paybackDays.toFixed(0);
+                document.getElementById('spb-annual-revenue').textContent = (revenuePerDayAfterFees * 365).toFixed(0);
+
+                // Table data
+                document.getElementById('spb-btc-daily').textContent = btcPerDayAfterFees.toFixed(6);
+                document.getElementById('spb-btc-monthly').textContent = (btcPerDayAfterFees * 30).toFixed(6);
+                document.getElementById('spb-btc-yearly').textContent = (btcPerDayAfterFees * 365).toFixed(6);
+
+                document.getElementById('spb-rev-daily').textContent = '$' + revenuePerDayAfterFees.toFixed(2);
+                document.getElementById('spb-rev-monthly').textContent = '$' + (revenuePerDayAfterFees * 30).toFixed(2);
+                document.getElementById('spb-rev-yearly').textContent = '$' + (revenuePerDayAfterFees * 365).toFixed(2);
+
+                document.getElementById('spb-cost-daily').textContent = '$' + costPerDay.toFixed(2);
+                document.getElementById('spb-cost-monthly').textContent = '$' + (costPerDay * 30).toFixed(2);
+                document.getElementById('spb-cost-yearly').textContent = '$' + (costPerDay * 365).toFixed(2);
+
+                document.getElementById('spb-profit-daily').textContent = '$' + profitPerDay.toFixed(2);
+                document.getElementById('spb-profit-monthly').textContent = '$' + (profitPerDay * 30).toFixed(2);
+                document.getElementById('spb-profit-yearly').textContent = '$' + (profitPerDay * 365).toFixed(2);
+
+                document.getElementById('spb-results').classList.remove('hidden');
+            } catch (error) {
+                alert('Erro nos cálculos: ' + error.message);
+            }
+        }
+
+        // ===== CASHFLOW ANALYSIS CALCULATION =====
+        function calculateCashflow() {
+            try {
+                // Get inputs
+                const period = parseInt(document.getElementById('cf-period').value);
+                const miners = parseInt(document.getElementById('cf-miners').value);
+                const powerPerMiner = parseFloat(document.getElementById('cf-power-per-miner').value);
+                const production = parseFloat(document.getElementById('cf-production').value);
+                const capex = parseFloat(document.getElementById('cf-capex').value);
+                const electricityCost = parseFloat(document.getElementById('cf-electricity').value);
+                const maintenance = parseFloat(document.getElementById('cf-maintenance').value);
+                const poolFee = parseFloat(document.getElementById('cf-pool-fee').value) / 100;
+                const btcPrice = parseFloat(document.getElementById('cf-btc-price').value);
+                const priceEscalation = parseFloat(document.getElementById('cf-price-escalation').value) / 100;
+                const costEscalation = parseFloat(document.getElementById('cf-cost-escalation').value) / 100;
+                const debtPercent = parseFloat(document.getElementById('cf-debt-percent').value) / 100;
+                const debtTenor = parseInt(document.getElementById('cf-debt-tenor').value);
+                const interestRate = parseFloat(document.getElementById('cf-interest-rate').value) / 100;
+                const taxRate = parseFloat(document.getElementById('cf-tax-rate').value) / 100;
+                const depreciationYears = parseInt(document.getElementById('cf-depreciation').value);
+
+                // Annual electricity cost (assuming 1 MWh = 1 unit for simplicity)
+                const annualElecCost = production * electricityCost * 1000; // Convert MWh to kWh
+
+                // Debt calculation
+                const debt = capex * debtPercent;
+                const equity = capex - debt;
+                const annualDebtPayment = debt > 0 ? (debt * (interestRate * Math.pow(1 + interestRate, debtTenor))) / (Math.pow(1 + interestRate, debtTenor) - 1) : 0;
+
+                // Cashflow arrays
+                let totalRevenue = 0;
+                let totalCosts = 0;
+                let totalProfit = 0;
+                let cumulativeCashflow = -equity;
+                let paybackYear = null;
+
+                for (let year = 1; year <= period; year++) {
+                    // Escalate prices
+                    const yearlyBtcPrice = btcPrice * Math.pow(1 + priceEscalation, year - 1);
+                    const yearlyElecCost = electricityCost * Math.pow(1 + costEscalation, year - 1);
+
+                    // Revenue
+                    const annualRevenueUsd = production * yearlyBtcPrice;
+                    const annualRevenueAfterFees = annualRevenueUsd * (1 - poolFee);
+
+                    // Operating costs
+                    const annualOpexUsd = (production * yearlyElecCost * 1000) + maintenance;
+
+                    // Depreciation
+                    const annualDepreciation = capex / depreciationYears;
+
+                    // EBITDA
+                    const ebitda = annualRevenueAfterFees - annualOpexUsd;
+
+                    // Debt service (if applicable)
+                    const debtService = year <= debtTenor ? annualDebtPayment : 0;
+
+                    // Taxable income
+                    const taxableIncome = Math.max(0, ebitda - annualDepreciation - (year <= debtTenor ? interestRate * debt : 0));
+                    const taxes = taxableIncome * taxRate;
+
+                    // Net cashflow
+                    const netCashflow = ebitda - debtService - taxes;
+
+                    cumulativeCashflow += netCashflow;
+
+                    if (paybackYear === null && cumulativeCashflow >= 0) {
+                        paybackYear = year;
+                    }
+
+                    totalRevenue += annualRevenueAfterFees;
+                    totalCosts += annualOpexUsd;
+                    totalProfit += netCashflow;
+                }
+
+                // NPV Calculation (simplified - assume 5% discount rate)
+                const discountRate = 0.05;
+                let npv = -equity;
+                for (let year = 1; year <= period; year++) {
+                    const yearlyBtcPrice = btcPrice * Math.pow(1 + priceEscalation, year - 1);
+                    const yearlyElecCost = electricityCost * Math.pow(1 + costEscalation, year - 1);
+                    const annualRevenueUsd = production * yearlyBtcPrice;
+                    const annualRevenueAfterFees = annualRevenueUsd * (1 - poolFee);
+                    const annualOpexUsd = (production * yearlyElecCost * 1000) + maintenance;
+                    const netCashflow = annualRevenueAfterFees - annualOpexUsd;
+                    npv += netCashflow / Math.pow(1 + discountRate, year);
+                }
+
+                // IRR Calculation (Newton-Raphson method)
+                let irr = 0.1; // Initial guess
+                for (let i = 0; i < 100; i++) {
+                    let npvAtRate = -equity;
+                    let npvDerivative = 0;
+                    for (let year = 1; year <= period; year++) {
+                        const yearlyBtcPrice = btcPrice * Math.pow(1 + priceEscalation, year - 1);
+                        const yearlyElecCost = electricityCost * Math.pow(1 + costEscalation, year - 1);
+                        const annualRevenueUsd = production * yearlyBtcPrice;
+                        const annualRevenueAfterFees = annualRevenueUsd * (1 - poolFee);
+                        const annualOpexUsd = (production * yearlyElecCost * 1000) + maintenance;
+                        const netCashflow = annualRevenueAfterFees - annualOpexUsd;
+                        npvAtRate += netCashflow / Math.pow(1 + irr, year);
+                        npvDerivative -= year * netCashflow / Math.pow(1 + irr, year + 1);
+                    }
+                    if (Math.abs(npvAtRate) < 0.01) break;
+                    irr -= npvAtRate / npvDerivative;
+                }
+
+                // Display results
+                document.getElementById('cf-npv').textContent = '$' + npv.toFixed(0);
+                document.getElementById('cf-irr').textContent = (irr * 100).toFixed(2) + '%';
+                document.getElementById('cf-dscr').textContent = (annualDebtPayment > 0 ? (ebitda / annualDebtPayment).toFixed(2) : 'N/A');
+                document.getElementById('cf-payback').textContent = paybackYear !== null ? paybackYear.toFixed(1) : '>5 anos';
+                document.getElementById('cf-total-revenue').textContent = '$' + totalRevenue.toFixed(0);
+                document.getElementById('cf-net-profit').textContent = '$' + totalProfit.toFixed(0);
+
+                document.getElementById('cf-results').classList.remove('hidden');
+
+                // Draw chart
+                drawCashflowChart(period, btcPrice, priceEscalation, production, electricityCost, costEscalation, poolFee, maintenance);
+            } catch (error) {
+                alert('Erro nos cálculos: ' + error.message);
+            }
+        }
+
+        // ===== CHART DRAWING =====
+        let cfChart = null;
+
+        function drawCashflowChart(period, btcPrice, priceEscalation, production, electricityCost, costEscalation, poolFee, maintenance) {
+            const labels = [];
+            const revenueData = [];
+            const costData = [];
+            const profitData = [];
+
+            for (let year = 1; year <= period; year++) {
+                labels.push('Ano ' + year);
+                
+                const yearlyBtcPrice = btcPrice * Math.pow(1 + priceEscalation, year - 1);
+                const yearlyElecCost = electricityCost * Math.pow(1 + costEscalation, year - 1);
+                const revenue = production * yearlyBtcPrice * (1 - poolFee) / 1000;
+                const cost = (production * yearlyElecCost * 1000 + maintenance) / 1000;
+                const profit = revenue - cost;
+
+                revenueData.push(revenue);
+                costData.push(cost);
+                profitData.push(profit);
+            }
+
+            const ctx = document.getElementById('cf-chart').getContext('2d');
+            if (cfChart) cfChart.destroy();
+
+            cfChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receita (USD k)',
+                            data: revenueData,
+                            backgroundColor: '#27ae60',
+                            borderColor: '#27ae60',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Custos (USD k)',
+                            data: costData,
+                            backgroundColor: '#e74c3c',
+                            borderColor: '#e74c3c',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Lucro (USD k)',
+                            data: profitData,
+                            backgroundColor: '#f39c12',
+                            borderColor: '#f39c12',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ddd'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#888'
+                            },
+                            grid: {
+                                color: '#333'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#888'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        updateSPBTotalCost();
+        updateCFProduction();
+        updateCFCapex();
+    </script>
+</body>
+</html>
