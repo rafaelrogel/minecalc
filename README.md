@@ -372,7 +372,7 @@ Quer sugerir uma funcionalidade?
 Tem uma ideia?  
 Achou um bug?
 
-Mande um email: **rrogel@gmail.com**
+Mande um email: **rrogel arroba gmail ponto com**
 
 ---
 
