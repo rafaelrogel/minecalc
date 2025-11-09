@@ -1,0 +1,163 @@
+# 🎯 MINECALC - Instruções Rápidas de Hospedagem
+
+## 📌 SUA INFORMAÇÃO
+
+```
+👤 GitHub Username: rafaelrogel
+📦 Repositório: minecalc
+🌐 Seu Site Será: https://rafaelrogel.github.io/minecalc/
+```
+
+---
+
+## ⚡ 5 PASSOS SIMPLES
+
+### PASSO 1️⃣: Criar Repositório (1 minuto)
+
+1. Abra **github.com**
+2. Clique seu perfil (canto superior direito)
+3. Clique **"Your repositories"**
+4. Clique botão **"New"** (verde)
+
+**Preencha:**
+```
+Repository name: minecalc
+Description: Bitcoin Mining Financial Model
+Visibility: ✅ PUBLIC
+```
+
+5. Clique **"Create repository"**
+
+---
+
+### PASSO 2️⃣: Upload dos Arquivos (2 minutos)
+
+1. Clique **"Add file"** → **"Upload files"**
+2. **Arraste/clique para adicionar:**
+   - `mining-ultimate.html`
+   - `mining-pro.html`
+   - `mining-simple.html`
+   - `README.md`
+
+3. **IMPORTANTE**: Renomeie `mining-ultimate.html` para `index.html`
+   - (Clique no nome do arquivo, mude para `index.html`)
+
+4. Escreva na caixa de mensagem:
+   ```
+   Initial commit
+   ```
+
+5. Clique **"Commit changes"**
+
+---
+
+### PASSO 3️⃣: Ativar GitHub Pages (1 minuto)
+
+1. Seu repositório abriu
+2. Clique **"Settings"** (na aba superior)
+3. Clique **"Pages"** (menu esquerdo)
+4. Sob **"Build and deployment"**:
+   - **Source**: Selecione **"Deploy from a branch"**
+   - **Branch**: Selecione **"main"** e **"/ (root)"**
+5. Clique **"Save"**
+
+---
+
+### PASSO 4️⃣: Aguardar Deploy (1 minuto)
+
+⏳ Aguarde 30-60 segundos...
+
+Você verá uma mensagem verde:
+```
+✅ Your site is published at:
+   https://rafaelrogel.github.io/minecalc/
+```
+
+---
+
+### PASSO 5️⃣: Testar Seu Site (30 segundos)
+
+Clique no link:
+```
+https://rafaelrogel.github.io/minecalc/
+```
+
+✅ Pronto! Seu site está ONLINE! 🎉
+
+---
+
+## 📲 Seus Sites Disponíveis
+
+| Versão | Link |
+|--------|------|
+| **ULTIMATE** | https://rafaelrogel.github.io/minecalc/ |
+| **PRO** | https://rafaelrogel.github.io/minecalc/mining-pro.html |
+| **SIMPLE** | https://rafaelrogel.github.io/minecalc/mining-simple.html |
+
+---
+
+## 🔄 Fazer Mudanças (Futuro)
+
+### Se quiser editar algo:
+
+1. Entre no seu repositório no GitHub
+2. Clique no arquivo (ex: `index.html`)
+3. Clique ✏️ (lápis, "Edit")
+4. Faça as mudanças
+5. Scroll até fim → Clique **"Commit changes"**
+6. **Seu site atualiza automaticamente em 30 segundos!**
+
+---
+
+## ❓ Dúvidas Comuns
+
+### P: Onde vejo meu site depois?
+R: Em `https://rafaelrogel.github.io/minecalc/`
+
+### P: Quanto custa?
+R: **100% GRÁTIS** para sempre!
+
+### P: Preciso pagar por domínio?
+R: Não. O domínio padrão é grátis.  
+Se quiser domínio personalizado (type minecalc.com), custa ~$10/ano.
+
+### P: Quem pode acessar?
+R: Qualquer pessoa com o link!
+
+### P: Meus dados são seguros?
+R: SIM! Tudo é local no navegador. Nada é enviado para servidor.
+
+### P: Funciona offline?
+R: Sim, depois que carrega (exceto APIs real-time).
+
+---
+
+## ✅ CHECKLIST
+
+- [ ] Repositório criado
+- [ ] Arquivos fazem upload
+- [ ] index.html foi renomeado
+- [ ] GitHub Pages ativado
+- [ ] Aguardou 60 segundos
+- [ ] Clicou no link do site
+- [ ] Site carregou corretamente
+- [ ] Testou alguns cálculos
+- [ ] Compartilhou o link!
+
+---
+
+## 🎉 PRONTO!
+
+Seu calculadora de mineração Bitcoin agora está:
+
+✅ **Online** em https://rafaelrogel.github.io/minecalc/
+✅ **Segura** (HTTPS automático)
+✅ **Rápida** (CDN global)
+✅ **Grátis** (sem custos)
+✅ **Sempre ativa** (99.9% uptime)
+
+**Aproveite! ⛏️📊🚀**
+
+---
+
+**Se tiver dúvida, mande email: rrogel@gmail.com**
