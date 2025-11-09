@@ -290,7 +290,7 @@ MIT License - Livre para usar, modificar e distribuir!
 ## 👨‍💻 Desenvolvedor
 
 Criado por: **Rafael Rogel**  
-Email: rrogel@gmail.com  
+Email: rrogel arroba gmail ponto com  
 GitHub: @rafaelrogel  
 Localização: Portugal 🇵🇹
 
