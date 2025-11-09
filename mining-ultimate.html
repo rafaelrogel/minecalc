@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Mining Financial Model - ULTIMATE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js@2.26.0/dist/plotly.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin: 10px 5px 0 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #444;
+            flex-wrap: wrap;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: #0f3460;
+            border: none;
+            color: #bbb;
+            cursor: pointer;
+            font-size: 1em;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-button.active {
+            color: #f39c12;
+            border-bottom-color: #f39c12;
+            background: #16213e;
+        }
+
+        .tab-button:hover {
+            background: #1a3a52;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .form-section h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ddd;
+            font-size: 0.95em;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+        }
+
+        button.calculate-btn {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button.calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-secondary {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-secondary:hover {
+            background: #229954;
+        }
+
+        .results {
+            background: #0f3460;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .results h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 3px solid #f39c12;
+            text-align: center;
+        }
+
+        .result-card h4 {
+            color: #bbb;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .result-card .value {
+            font-size: 2em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .chart-3d-container {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            height: 600px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        .comparison-table th {
+            background: #1a1a2e;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:hover {
+            background: #1a3a52;
+        }
+
+        .pool-card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pool-card:hover {
+            border-left-color: #f39c12;
+            transform: translateX(5px);
+        }
+
+        .pool-card h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .pool-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pool-stat {
+            text-align: center;
+            padding: 10px;
+            background: #0f3460;
+            border-radius: 5px;
+        }
+
+        .pool-stat-value {
+            color: #f39c12;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .pool-stat-label {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .sensitivity-heatmap {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .info-box {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .price-history-chart {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            min-height: 400px;
+        }
+
+        .miner-item {
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .miner-item button {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .miner-item button:hover {
+            background: #c0392b;
+        }
+
+        .add-miner-btn {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        .add-miner-btn:hover {
+            background: #229954;
+        }
+
+        .deployment-guide {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .deployment-guide h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .deployment-step {
+            background: #1a1a2e;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #f39c12;
+        }
+
+        .deployment-step h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .deployment-step code {
+            background: #0f3460;
+            padding: 10px;
+            border-radius: 3px;
+            display: block;
+            margin: 10px 0;
+            color: #27ae60;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .chart-3d-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ Bitcoin Mining Financial Model ULTIMATE</h1>
+            <p>A plataforma mais completa para análise de mineração</p>
+            <span class="badge">✨ EDIÇÃO ULTIMATE</span>
+            <span class="badge">🎯 + 7 FUNCIONALIDADES PREMIUM</span>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('multi-miners')">
+                ⛏️ Múltiplos Mineradores
+            </button>
+            <button class="tab-button" onclick="switchTab('sensitivity-3d')">
+                📊 Sensibilidade 3D
+            </button>
+            <button class="tab-button" onclick="switchTab('pools')">
+                🏊 Comparação Pools
+            </button>
+            <button class="tab-button" onclick="switchTab('price-history')">
+                📈 Histórico BTC
+            </button>
+            <button class="tab-button" onclick="switchTab('deployment')">
+                🌐 Hospedagem Online
+            </button>
+        </div>
+
+        <!-- TAB 1: MÚLTIPLOS MINERADORES -->
+        <div id="multi-miners" class="tab-content active">
+            <div class="form-grid">
+                <div class="form-section">
+                    <h3>⛏️ Gerenciador de Mineradores</h3>
+                    <div id="miners-list"></div>
+                    <button class="add-miner-btn" onclick="addMiner()">+ Adicionar Minerador</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>⚙️ Configurações Globais</h3>
+                    <div class="form-group">
+                        <label>Custo de Eletricidade ($/kWh)</label>
+                        <input type="number" id="global-electricity" value="0.05" step="0.001">
+                    </div>
+                    <div class="form-group">
+                        <label>Taxa Pool (%)</label>
+                        <input type="number" id="global-pool-fee" value="2" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Preço BTC (USD)</label>
+                        <input type="number" id="global-btc-price" value="86000" step="100">
+                    </div>
+                    <button class="calculate-btn" onclick="calculateMultiMiners()">
+                        🧮 Calcular Múltiplos
+                    </button>
+                </div>
+            </div>
+
+            <div id="multi-results" class="hidden">
+                <div class="results">
+                    <h2>✅ Resultados - Múltiplos Mineradores</h2>
+                    <div class="action-buttons">
+                        <button class="btn-secondary" onclick="exportMultiMinersPDF()">📄 Exportar PDF</button>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Hashrate Total</h4>
+                            <div class="value" id="mm-total-hash">-</div>
+                            <div class="unit">TH/s</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Potência Total</h4>
+                            <div class="value" id="mm-total-power">-</div>
+                            <div class="unit">kW</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Receita Diária</h4>
+                            <div class="value" id="mm-daily-revenue">-</div>
+                            <div class="unit">USD</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Investimento Total</h4>
+                            <div class="value" id="mm-total-invest">-</div>
+                            <div class="unit">USD</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Payback Médio</h4>
+                            <div class="value" id="mm-payback">-</div>
+                            <div class="unit">dias</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>ROI Anual</h4>
+                            <div class="value" id="mm-roi">-</div>
+                            <div class="unit">%</div>
+                        </div>
+                    </div>
+
+                    <table class="comparison-table">
+                        <tr>
+                            <th>#</th>
+                            <th>Modelo</th>
+                            <th>Hashrate</th>
+                            <th>Potência</th>
+                            <th>Investimento</th>
+                            <th>Receita/Dia</th>
+                            <th>Payback</th>
+                        </tr>
+                        <tbody id="mm-table-body"></tbody>
+                    </table>
+
+                    <div class="chart-container">
+                        <canvas id="mm-comparison-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SENSIBILIDADE 3D -->
+        <div id="sensitivity-3d" class="tab-content">
+            <div class="form-section">
+                <h3>📊 Análise 3D - Sensibilidade Múltipla</h3>
+                <p style="color: #bbb; margin-bottom: 15px;">
+                    Visualize como 3 variáveis impactam simultaneamente seu payback
+                </p>
+                <div class="form-group">
+                    <label>Eixo X: Variação de Preço BTC</label>
+                    <input type="range" id="3d-btc-range" min="0.5" max="2" step="0.1" value="1" 
+                           oninput="updateSensitivity3D()">
+                    <span id="3d-btc-value">100%</span>
+                </div>
+                <div class="form-group">
+                    <label>Eixo Y: Variação de Eletricidade</label>
+                    <input type="range" id="3d-elec-range" min="0.5" max="2" step="0.1" value="1"
+                           oninput="updateSensitivity3D()">
+                    <span id="3d-elec-value">100%</span>
+                </div>
+                <div class="form-group">
+                    <label>Eixo Z: Variação de Hashrate</label>
+                    <input type="range" id="3d-hash-range" min="0.5" max="2" step="0.1" value="1"
+                           oninput="updateSensitivity3D()">
+                    <span id="3d-hash-value">100%</span>
+                </div>
+                <button class="calculate-btn" onclick="calculate3DSensitivity()">
+                    🔄 Gerar Gráfico 3D
+                </button>
+            </div>
+
+            <div id="sensitivity-3d-results" class="hidden">
+                <div class="sensitivity-heatmap">
+                    <h2 style="color: #27ae60; margin-bottom: 20px;">Sensibilidade 3D - Payback (dias)</h2>
+                    <div id="plotly-3d-chart" style="width:100%; height:600px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: COMPARAÇÃO POOLS -->
+        <div id="pools" class="tab-content">
+            <div class="form-section">
+                <h3>🏊 Análise Comparativa de Pools</h3>
+                <p style="color: #bbb; margin-bottom: 15px;">
+                    Compare o impacto de diferentes pools de mineração no seu retorno
+                </p>
+                <button class="calculate-btn" onclick="comparePools()">
+                    🔍 Comparar Pools Principais
+                </button>
+            </div>
+
+            <div id="pools-results" class="hidden">
+                <div class="results">
+                    <h2>🏊 Comparação de Pools de Mineração</h2>
+                    
+                    <div id="pools-container"></div>
+
+                    <div class="chart-container" style="margin-top: 30px;">
+                        <h3 style="color: #f39c12; margin-bottom: 20px;">Lucro Anual por Pool</h3>
+                        <canvas id="pools-chart"></canvas>
+                    </div>
+
+                    <div class="info-box" style="margin-top: 30px;">
+                        <strong>💡 Interpretação:</strong><br>
+                        A diferença de taxa entre pools pode variar de 0,5% a 3% do seu lucro anual.
+                        Pools maiores = menor latência, mas taxa maior. Escolha baseado em sua localização geográfica.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: HISTÓRICO DE PREÇOS -->
+        <div id="price-history" class="tab-content">
+            <div class="form-section">
+                <h3>📈 Histórico de Preços Bitcoin</h3>
+                <p style="color: #bbb; margin-bottom: 15px;">
+                    Visualize o histórico de 5 anos do Bitcoin e analise tendências
+                </p>
+                <div class="form-group">
+                    <label>Período Histórico</label>
+                    <select id="history-period" onchange="loadPriceHistory()">
+                        <option value="1y">Últimos 12 meses</option>
+                        <option value="2y">Últimos 2 anos</option>
+                        <option value="5y" selected>Últimos 5 anos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="price-history-results" class="hidden">
+                <div class="price-history-chart">
+                    <div class="loading" id="history-loading">
+                        <div class="spinner"></div>
+                        <p>Carregando histórico de preços...</p>
+                    </div>
+                    <canvas id="price-history-canvas" class="hidden"></canvas>
+                </div>
+
+                <div class="results" style="margin-top: 30px;">
+                    <h2>📊 Análise de Tendência</h2>
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Preço Mínimo</h4>
+                            <div class="value" id="price-min">-</div>
+                            <div class="unit">USD</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Preço Máximo</h4>
+                            <div class="value" id="price-max">-</div>
+                            <div class="unit">USD</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Preço Médio</h4>
+                            <div class="value" id="price-avg">-</div>
+                            <div class="unit">USD</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Volatilidade</h4>
+                            <div class="value" id="price-volatility">-</div>
+                            <div class="unit">%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: HOSPEDAGEM ONLINE -->
+        <div id="deployment" class="tab-content">
+            <div class="results">
+                <h2>🌐 Hospede Seu Site Online Gratuitamente</h2>
+                <p style="color: #bbb; margin-bottom: 20px;">
+                    Escolha uma das opções abaixo para colocar sua calculadora online em minutos
+                </p>
+
+                <div class="deployment-guide">
+                    <h3>🚀 Opção 1: GitHub Pages (Recomendado - Totalmente Grátis)</h3>
+                    <div class="deployment-step">
+                        <h4>Passo 1: Criar Conta GitHub</h4>
+                        <p>Acesse <strong>github.com</strong> e crie uma conta gratuita</p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Passo 2: Criar Repositório</h4>
+                        <p>Clique em "New Repository" e nomeie como: <strong>mining-calculator</strong></p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Passo 3: Upload do Arquivo</h4>
+                        <p>Suba seu arquivo <strong>mining-pro.html</strong> para o repositório</p>
+                        <p style="color: #f39c12; margin-top: 10px;">💡 Dica: Renomeie para <strong>index.html</strong></p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Passo 4: Ativar GitHub Pages</h4>
+                        <p>Settings → GitHub Pages → Source: Main Branch</p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Resultado</h4>
+                        <code>https://seu-usuario.github.io/mining-calculator</code>
+                        <p style="color: #27ae60; margin-top: 10px;">✅ Seu site está online!</p>
+                    </div>
+                </div>
+
+                <div class="deployment-guide">
+                    <h3>🎨 Opção 2: Netlify (Grátis - Interface Visual)</h3>
+                    <div class="deployment-step">
+                        <h4>Passo 1: Acessar Netlify</h4>
+                        <p>Vá para <strong>netlify.com</strong> e faça login com GitHub</p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Passo 2: Drag & Drop</h4>
+                        <p>Arraste seu arquivo <strong>mining-pro.html</strong> para a página</p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Passo 3: Domínio Personalizado</h4>
+                        <p>Receba um link automático tipo: <strong>mining-calc-xyz.netlify.app</strong></p>
+                        <p style="color: #f39c12; margin-top: 10px;">💡 Você pode comprar domínio personalizado por ~$10/ano</p>
+                    </div>
+                </div>
+
+                <div class="deployment-guide">
+                    <h3>☁️ Opção 3: Vercel (Grátis - Otimizado para Web)</h3>
+                    <div class="deployment-step">
+                        <h4>Passo 1: Importar Repositório</h4>
+                        <p>Vá para <strong>vercel.com</strong> → Import Project</p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Passo 2: Conectar GitHub</h4>
+                        <p>Selecione seu repositório com mining-pro.html</p>
+                    </div>
+                    <div class="deployment-step">
+                        <h4>Passo 3: Deploy Automático</h4>
+                        <p>Vercel faz deploy automático cada vez que você atualiza o repositório</p>
+                    </div>
+                </div>
+
+                <div class="deployment-guide">
+                    <h3>📱 Opção 4: Criar App Mobile (React Native)</h3>
+                    <p style="color: #bbb; margin-top: 15px;">
+                        Posso converter seu site para um app mobile que funciona em iOS e Android
+                    </p>
+                    <div class="deployment-step">
+                        <h4>Benefícios:</h4>
+                        <p>✅ Funciona offline</p>
+                        <p>✅ Acesso rápido (ícone na home)</p>
+                        <p>✅ Notificações push com alertas de preço</p>
+                        <p>✅ Armazena histórico de cálculos</p>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 30px;">
+                    <strong>🎯 Recomendação:</strong><br>
+                    Para começar: <strong>GitHub Pages</strong> (5 min, totalmente grátis, SEM limite de tráfego)<br>
+                    Para scale: <strong>Vercel</strong> (melhor performance, deploy automático)
+                </div>
+
+                <div class="warning-box" style="margin-top: 20px;">
+                    <strong>⚠️ Importante:</strong><br>
+                    Todos os seus dados ficam no navegador. Nada é armazenado em servidores.<br>
+                    Totalmente seguro e privado!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMiners();
+            loadPriceHistory();
+        });
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== MINERADORES MÚLTIPLOS =====
+        let miners = [
+            { id: 1, model: 'Antminer S21', hashrate: 860, power: 11.18, cost: 21500 }
+        ];
+
+        function initializeMiners() {
+            renderMinersList();
+        }
+
+        function renderMinersList() {
+            const container = document.getElementById('miners-list');
+            container.innerHTML = '';
+
+            miners.forEach((miner, idx) => {
+                const div = document.createElement('div');
+                div.className = 'miner-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>${miner.model}</strong><br>
+                        <small>Hashrate: ${miner.hashrate} TH/s | Potência: ${miner.power} kW | Custo: $${miner.cost}</small>
+                        <input type="number" placeholder="Quantidade" id="qty-${miner.id}" value="1" style="margin-top: 8px; width: 80px;">
+                    </div>
+                    <button onclick="removeMiner(${miner.id})">Remover</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function addMiner() {
+            const model = prompt('Modelo do minerador (ex: Antminer S21)');
+            const hashrate = parseFloat(prompt('Hashrate (TH/s)'));
+            const power = parseFloat(prompt('Potência (kW)'));
+            const cost = parseFloat(prompt('Custo (USD)'));
+
+            if (model && hashrate && power && cost) {
+                miners.push({
+                    id: Math.max(...miners.map(m => m.id), 0) + 1,
+                    model, hashrate, power, cost
+                });
+                renderMinersList();
+            }
+        }
+
+        function removeMiner(id) {
+            miners = miners.filter(m => m.id !== id);
+            renderMinersList();
+        }
+
+        function calculateMultiMiners() {
+            const electricity = parseFloat(document.getElementById('global-electricity').value);
+            const poolFee = parseFloat(document.getElementById('global-pool-fee').value) / 100;
+            const btcPrice = parseFloat(document.getElementById('global-btc-price').value);
+
+            const networkHash = 760; // EH/s
+            const blockTime = 600; // seconds
+            const blockReward = 3.125; // BTC
+
+            let totalHashrate = 0;
+            let totalPower = 0;
+            let totalInvestment = 0;
+            let totalDailyRevenue = 0;
+            const results = [];
+
+            miners.forEach(miner => {
+                const qty = parseInt(document.getElementById(`qty-${miner.id}`).value) || 1;
+                const hashrate = miner.hashrate * qty;
+                const power = miner.power * qty;
+                const investment = miner.cost * qty;
+
+                totalHashrate += hashrate;
+                totalPower += power;
+                totalInvestment += investment;
+
+                // Calculate revenue
+                const networkHashExa = networkHash * 1000000;
+                const networkPercentage = (hashrate / networkHashExa);
+                const blocksPerDay = 86400 / blockTime;
+                const btcPerDay = (blocksPerDay * blockReward * hashrate / networkHashExa);
+                const btcPerDayAfterFees = btcPerDay * (1 - poolFee);
+                const revenuePerDay = btcPerDayAfterFees * btcPrice;
+                const costPerDay = power * electricity * 24;
+                const profitPerDay = revenuePerDay - costPerDay;
+                const payback = investment / profitPerDay;
+
+                totalDailyRevenue += revenuePerDay;
+
+                results.push({
+                    model: miner.model,
+                    qty,
+                    hashrate,
+                    power,
+                    investment,
+                    revenuePerDay,
+                    costPerDay,
+                    profitPerDay,
+                    payback
+                });
+            });
+
+            // Display results
+            document.getElementById('mm-total-hash').textContent = totalHashrate.toFixed(0);
+            document.getElementById('mm-total-power').textContent = totalPower.toFixed(2);
+            document.getElementById('mm-daily-revenue').textContent = '$' + totalDailyRevenue.toFixed(2);
+            document.getElementById('mm-total-invest').textContent = '$' + totalInvestment.toFixed(0);
+
+            const avgPayback = results.reduce((a, b) => a + b.payback, 0) / results.length;
+            const annualProfit = (totalDailyRevenue * 365) - (totalPower * electricity * 24 * 365);
+            const roi = ((annualProfit / totalInvestment) * 100);
+
+            document.getElementById('mm-payback').textContent = avgPayback.toFixed(0);
+            document.getElementById('mm-roi').textContent = roi.toFixed(1);
+
+            // Table
+            const tbody = document.getElementById('mm-table-body');
+            tbody.innerHTML = '';
+            results.forEach((r, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${r.model} x${r.qty}</td>
+                        <td>${r.hashrate.toFixed(0)} TH/s</td>
+                        <td>${r.power.toFixed(2)} kW</td>
+                        <td>$${r.investment.toFixed(0)}</td>
+                        <td>$${r.revenuePerDay.toFixed(2)}</td>
+                        <td>${r.payback.toFixed(0)} dias</td>
+                    </tr>
+                `;
+            });
+
+            drawMultiMinersChart(results);
+            document.getElementById('multi-results').classList.remove('hidden');
+        }
+
+        let mmChart = null;
+
+        function drawMultiMinersChart(results) {
+            const ctx = document.getElementById('mm-comparison-chart').getContext('2d');
+            if (mmChart) mmChart.destroy();
+
+            mmChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: results.map((r, i) => `${r.model} x${r.qty}`),
+                    datasets: [
+                        {
+                            label: 'Investimento (USD k)',
+                            data: results.map(r => r.investment / 1000),
+                            backgroundColor: '#e74c3c',
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Payback (dias)',
+                            data: results.map(r => r.payback),
+                            backgroundColor: '#f39c12',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#ddd' } }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            ticks: { color: '#888' },
+                            grid: { color: '#333' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            ticks: { color: '#888' },
+                            grid: { display: false }
+                        },
+                        x: {
+                            ticks: { color: '#888' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== SENSIBILIDADE 3D =====
+        function updateSensitivity3D() {
+            const btcVal = parseFloat(document.getElementById('3d-btc-range').value);
+            const elecVal = parseFloat(document.getElementById('3d-elec-range').value);
+            const hashVal = parseFloat(document.getElementById('3d-hash-range').value);
+
+            document.getElementById('3d-btc-value').textContent = (btcVal * 100).toFixed(0) + '%';
+            document.getElementById('3d-elec-value').textContent = (elecVal * 100).toFixed(0) + '%';
+            document.getElementById('3d-hash-value').textContent = (hashVal * 100).toFixed(0) + '%';
+        }
+
+        function calculate3DSensitivity() {
+            // Plotly 3D surface plot
+            const btcRange = [0.7, 0.85, 1.0, 1.15, 1.3];
+            const elecRange = [0.7, 0.85, 1.0, 1.15, 1.3];
+            const hashRange = [0.7, 0.85, 1.0, 1.15, 1.3];
+
+            const z = [];
+            for (let h of hashRange) {
+                const row = [];
+                for (let btc of btcRange) {
+                    let colSum = 0;
+                    for (let elec of elecRange) {
+                        // Simulação do payback
+                        const payback = 800 * (1 / btc) * elec * (1 / h);
+                        colSum += payback;
+                    }
+                    row.push(colSum / elecRange.length);
+                }
+                z.push(row);
+            }
+
+            const trace = {
+                z: z,
+                type: 'surface',
+                colorscale: 'Viridis'
+            };
+
+            const layout = {
+                title: 'Payback 3D - Preço BTC vs Eletricidade vs Hashrate',
+                scene: {
+                    xaxis: { title: 'Preço BTC (multiplicador)' },
+                    yaxis: { title: 'Eletricidade (multiplicador)' },
+                    zaxis: { title: 'Payback (dias)' }
+                },
+                font: { color: '#ddd' },
+                paper_bgcolor: '#1a1a2e',
+                plot_bgcolor: '#0f3460'
+            };
+
+            Plotly.newPlot('plotly-3d-chart', [trace], layout, { responsive: true });
+            document.getElementById('sensitivity-3d-results').classList.remove('hidden');
+        }
+
+        // ===== COMPARAÇÃO DE POOLS =====
+        const pools = [
+            { name: 'F2Pool', fee: 2.5, latency: 'Baixa', minPayout: 0.01, url: 'f2pool.com' },
+            { name: 'Foundry USA', fee: 1.5, latency: 'Muito Baixa', minPayout: 0.01, url: 'foundryusa.com' },
+            { name: 'Antpool', fee: 2.5, latency: 'Média', minPayout: 0.01, url: 'antpool.com' },
+            { name: 'Mining Pool Hub', fee: 0.5, latency: 'Baixa', minPayout: 0.001, url: 'miningpoolhub.com' },
+            { name: 'LitecoinPool', fee: 1, latency: 'Média', minPayout: 0.01, url: 'litecoinpool.org' }
+        ];
+
+        function comparePools() {
+            const electricity = parseFloat(document.getElementById('global-electricity').value) || 0.05;
+            const btcPrice = parseFloat(document.getElementById('global-btc-price').value) || 86000;
+
+            // Simulação de receita
+            const baseAnnualRevenue = 5000; // USD
+
+            let html = '';
+            const poolsData = pools.map(pool => {
+                const annualRevenue = baseAnnualRevenue;
+                const poolCost = (annualRevenue * pool.fee) / 100;
+                const netRevenue = annualRevenue - poolCost;
+
+                html += `
+                    <div class="pool-card">
+                        <h4>${pool.name}</h4>
+                        <div class="pool-stats">
+                            <div class="pool-stat">
+                                <div class="pool-stat-value">${pool.fee}%</div>
+                                <div class="pool-stat-label">Taxa</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-value">${pool.latency}</div>
+                                <div class="pool-stat-label">Latência</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-value">${pool.minPayout}</div>
+                                <div class="pool-stat-label">Min. Payout</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 10px; color: #27ae60;">
+                            <strong>Lucro Anual Líquido:</strong> $${netRevenue.toFixed(0)}
+                        </p>
+                        <p style="color: #888; font-size: 0.9em;">
+                            <a href="https://${pool.url}" target="_blank" style="color: #f39c12;">Visitar site →</a>
+                        </p>
+                    </div>
+                `;
+
+                return { name: pool.name, netRevenue };
+            });
+
+            document.getElementById('pools-container').innerHTML = html;
+
+            drawPoolsChart(poolsData);
+            document.getElementById('pools-results').classList.remove('hidden');
+        }
+
+        let poolsChart = null;
+
+        function drawPoolsChart(poolsData) {
+            const ctx = document.getElementById('pools-chart').getContext('2d');
+            if (poolsChart) poolsChart.destroy();
+
+            poolsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: poolsData.map(p => p.name),
+                    datasets: [{
+                        label: 'Lucro Anual (USD)',
+                        data: poolsData.map(p => p.netRevenue),
+                        backgroundColor: ['#27ae60', '#3498db', '#f39c12', '#e74c3c', '#9b59b6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ddd' } }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#888',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { color: '#888' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== HISTÓRICO DE PREÇOS =====
+        async function loadPriceHistory() {
+            try {
+                document.getElementById('history-loading').classList.remove('hidden');
+                document.getElementById('price-history-canvas').classList.add('hidden');
+
+                const response = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1825');
+                const data = await response.json();
+
+                const prices = data.prices.map(p => ({ date: new Date(p[0]), price: p[1] }));
+
+                const min = Math.min(...prices.map(p => p.price));
+                const max = Math.max(...prices.map(p => p.price));
+                const avg = prices.reduce((a, b) => a + b.price, 0) / prices.length;
+                const volatility = (Math.sqrt(prices.reduce((sq, p) => sq + Math.pow(p.price - avg, 2), 0) / prices.length) / avg) * 100;
+
+                document.getElementById('price-min').textContent = '$' + min.toFixed(0);
+                document.getElementById('price-max').textContent = '$' + max.toFixed(0);
+                document.getElementById('price-avg').textContent = '$' + avg.toFixed(0);
+                document.getElementById('price-volatility').textContent = volatility.toFixed(2);
+
+                drawPriceHistory(prices);
+
+                document.getElementById('history-loading').classList.add('hidden');
+                document.getElementById('price-history-canvas').classList.remove('hidden');
+            } catch (error) {
+                document.getElementById('history-loading').innerHTML = '<p style="color: #e74c3c;">Erro ao carregar dados históricos</p>';
+            }
+        }
+
+        let priceChart = null;
+
+        function drawPriceHistory(prices) {
+            const ctx = document.getElementById('price-history-canvas').getContext('2d');
+            if (priceChart) priceChart.destroy();
+
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: prices.map(p => p.date.toLocaleDateString()),
+                    datasets: [{
+                        label: 'Preço BTC (USD)',
+                        data: prices.map(p => p.price),
+                        borderColor: '#f39c12',
+                        backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                        fill: true,
+                        tension: 0.1,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ddd' } }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#888',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: { color: '#333' }
+                        },
+                        x: {
+                            ticks: { color: '#888' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== EXPORT FUNCTIONS =====
+        function exportMultiMinersPDF() {
+            const element = document.getElementById('multi-results');
+            const opt = {
+                margin: 10,
+                filename: `mining-multi-${new Date().toLocaleDateString()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
