@@ -305,7 +305,7 @@ Teste todas as funcionalidades e reporte problemas
 - **Stack Overflow**: Tag `github-pages`
 
 ### Me contacte:
-- Email: rrogel@gmail.com
+- Email: rrogel arroba gmail ponto com
 - GitHub: @rafaelrogel
 
 ---
